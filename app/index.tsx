@@ -1,17 +1,58 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView, Image, StatusBar } from "react-native";
 import React from "react";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { images } from "../constants";
+import CustomButton from "@/components/CustomButton";
 
 const Index = () => {
   return (
-    <View className="flex justify-center items-center h-full bg-black">
-      <Link href="/home">
-        <View className="justify-center items-center flex flex-col gap-2">
-          <Text className="font-bold text-2xl text-white">Vimo</Text>
-          <Text className="text-gray-300">Welcomes You!!</Text>
+    <SafeAreaView className="bg-primary h-full">
+      <ScrollView
+        contentContainerStyle={{
+          height: "100%",
+        }}
+      >
+        <View className="w-full flex justify-center items-center h-[84vh]">
+          <Image
+            source={images.logo}
+            className="w-[180] h-[34]"
+            resizeMode="contain"
+          />
+          <Image
+            source={images.cards}
+            resizeMode="contain"
+            className="w-[375px] h-[298px]"
+          />
+          <View className="relative mt-5 w-[333px]">
+            <Text className="text-3xl text-white font-bold text-center">
+              Discover Endless Possibilities with{" "}
+              <Text className="text-secondary-200">Vimo</Text>
+            </Text>
+            <Image
+              source={images.path}
+              className="w-[136px] h-[15px] absolute -bottom-2 -right-8"
+              resizeMode="contain"
+            />
+          </View>
+          <View className=" w-[333px] mt-5">
+            <Text className="text-gray-200 text-center font-pregular text-sm">
+              Where Creativity Meets Innovation: Embark on a Journey of
+              Limitless Exploration with Vimo
+            </Text>
+          </View>
+          <View className=" w-[333px] items-center">
+            <CustomButton
+              title="Sign In"
+              handlePress={() => router.push("/signIn")}
+              containerStyles="w-full mt-7 "
+            />
+          </View>
         </View>
-      </Link>
-    </View>
+      </ScrollView>
+
+      <StatusBar backgroundColor="161622" barStyle={"light-content"} />
+    </SafeAreaView>
   );
 };
 

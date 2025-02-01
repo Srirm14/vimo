@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./app/**/*.{js,jsx,ts,tsx}"],
+  content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
@@ -10,6 +10,9 @@ module.exports = {
           DEFAULT: "#FF9C01",
           100: "#FF9001",
           200: "#FF8E01",
+        },
+        secondary_v2: {
+          DEFAULT: "#FF6347",
         },
         black: {
           DEFAULT: "#000",
