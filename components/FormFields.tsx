@@ -8,11 +8,11 @@ const FormFields = ({
   customStyles,
   value,
   handleChangeText,
+  onBlur,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
-  const [isFocused, setIsFocused] = useState(false); // State to track focus
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View className={`${customStyles} flex flex-col gap-2`}>
@@ -27,8 +27,11 @@ const FormFields = ({
           value={value}
           placeholder={placeholder}
           onChangeText={handleChangeText}
-          onFocus={() => setIsFocused(true)} // Set focus state to true
-          onBlur={() => setIsFocused(false)} // Set focus state to false
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => {
+            setIsFocused(false);
+            if (onBlur) onBlur(); // Call the onBlur prop if provided
+          }}
           secureTextEntry={label === "Password" && !showPassword}
           {...props}
         />
