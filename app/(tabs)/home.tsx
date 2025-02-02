@@ -14,7 +14,6 @@ import {
   import useVideoDataStore from "@/store/useVideoDataStore";
   import { getAllPosts } from "@/lib/appwrite";
   import VideoContent from "@/components/VideoContent";
-import VideoCard from "@/components/VideoContent";
   
   const Home = () => {
     const { videoData, setVideoData } = useVideoDataStore();
@@ -71,13 +70,11 @@ import VideoCard from "@/components/VideoContent";
           data={videoData || []}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <VideoCard
-            title={item.title}
-            thumbnail={item.thumbnail}
-            video={item.video}
-            creator={item.creator}
-            avatar={item.avatar}
-          />
+            <VideoContent
+              video={item}
+              isPlaying={playingVideoId === item.id}
+              onPlayToggle={() => handlePlayToggle(item.id)}
+            />
           )}
           ListHeaderComponent={() => (
             <View className="flex my-6 px-4 space-y-6">

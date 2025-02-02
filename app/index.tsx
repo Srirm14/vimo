@@ -7,8 +7,10 @@ import CustomButton from "@/components/CustomButton";
 import useGlobalStore from "@/store/useGlobalStore";
 
 const Index = () => {
-  const { isLoggedIn, isLoading } = useGlobalStore((state) => state);
-  if (isLoggedIn && !isLoading) return <Redirect href={"/home"} />;
+
+
+    const { isLoggedIn, isLoading } = useGlobalStore((state) => state);
+    if(isLoggedIn && !isLoading) return <Redirect href={'/home'}/>
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView
@@ -47,7 +49,7 @@ const Index = () => {
           <View className=" w-[333px] items-center">
             <CustomButton
               title="Sign In"
-              handlePress={() => router.push("/signIn")}
+              handlePress={() => router.push("/home")}
               containerStyles="w-full mt-7 "
             />
           </View>
