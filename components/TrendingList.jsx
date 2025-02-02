@@ -1,7 +1,11 @@
 import { View, Text, FlatList } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 
 const TrendingList = ({ data }) => {
+
+  useEffect(()=>{
+console.log(data);
+  },[])
   return (
     <View className="flex flex-col gap-2 justify-center items-start px-4">
       <FlatList
@@ -9,7 +13,7 @@ const TrendingList = ({ data }) => {
         keyExtractor={(item)=> item.id}
         renderItem={({ item }) => (
           <View className="flex flex-row items-center gap-2">
-            <Text className="text-gray-200 px-4">{item.name}</Text>
+            <Text className="text-gray-200 px-4">{data.name}</Text>
           </View>
         )}
         ListEmptyComponent={()=>(

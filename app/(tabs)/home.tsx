@@ -7,16 +7,17 @@ import {
     SafeAreaView,
   } from "react-native";
   import React, { useState, useEffect } from "react";
-  import { images, icons } from "../../constants";
+  import { images } from "../../constants";
   import SearchInput from "@/components/SearchInput";
   import TrendingList from "../../components/TrendingList";
   import EmptyState from "@/components/EmptyState";
   import useVideoDataStore from "@/store/useVideoDataStore";
-  import { getAllPosts } from "@/lib/appwrite";
+  import { getAllPosts, getLatestPosts } from "@/lib/appwrite";
   import VideoContent from "@/components/VideoContent";
   
   const Home = () => {
-    const { videoData, setVideoData } = useVideoDataStore();
+    const { videoData, setVideoData } = useVideoDataStore((state) => state);
+    const [latestVideos, setLatestVideos] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [playingVideoId, setPlayingVideoId] = useState(null);
   
@@ -27,40 +28,46 @@ import {
       { id: "4", name: "Australia" },
     ];
   
-    // Fetch video data (simulating API call)
+    // Fetch all videos
     useEffect(() => {
       const fetchVideos = async () => {
         const posts = await getAllPosts();
-  
-        // Map the posts to the format expected by the store
         const videoData = posts.map((post) => ({
-          id: post.$id, // You can use the unique ID here
+          id: post.$id,
           title: post.title,
           thumbnail: post.thumbnail,
           prompt: post.prompt,
           video: post.video,
           creator: post.creator.username,
-          avatar: post.creator.avatar, // Assuming you need the creator's username
+          avatar: post.creator.avatar,
         }));
-  
-        // Set the transformed videoData in the store
         setVideoData(videoData);
       };
   
       fetchVideos();
     }, []);
   
+    // Fetch latest videos
+    useEffect(() => {
+      const fetchLatestVideos = async () => {
+        const latest = await getLatestPosts();
+        setLatestVideos(latest);
+      };
+  
+      fetchLatestVideos();
+    }, []);
+  
     // Refresh function
     const onRefresh = async () => {
       setRefreshing(true);
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 1000); // Simulated API delay
+      await getAllPosts();
+      await getLatestPosts();
+      setRefreshing(false);
     };
   
     // Toggle play/pause
-    const handlePlayToggle = (videoId:any) => {
-      setPlayingVideoId(playingVideoId === videoId ? null : videoId); // Toggle play state
+    const handlePlayToggle = (videoId) => {
+      setPlayingVideoId(playingVideoId === videoId ? null : videoId);
     };
   
     return (
@@ -103,15 +110,12 @@ import {
                 <Text className="text-sm font-pregular text-gray-100 mb-3">
                   Latest Videos
                 </Text>
-                <TrendingList data={trendingData ?? []} />
+                <TrendingList data={latestVideos ?? []} />
               </View>
             </View>
           )}
           ListEmptyComponent={() => (
-            <EmptyState
-              title="No Videos Found"
-              subtitle="No videos created yet"
-            />
+            <EmptyState title="No Videos Found" subtitle="No videos created yet" />
           )}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
