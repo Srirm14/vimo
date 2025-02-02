@@ -5,6 +5,7 @@ import {
     Image,
     KeyboardAvoidingView,
     Platform,
+    Alert,
   } from "react-native";
   import React from "react";
   import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +14,8 @@ import {
   import CustomButton from "@/components/CustomButton";
   import { router } from "expo-router";
   import { Controller, useForm } from "react-hook-form";
+  import { createUser } from "@/lib/appwrite";
+  import useGlobalStore from "@/store/useGlobalStore";
   
   const SignUp = () => {
     const { control, handleSubmit } = useForm({
@@ -23,10 +26,33 @@ import {
       },
     });
   
-    const onSubmit = (data) => {
-      console.log(data); // Handle sign-up logic here
-      router.replace("/home");
-    };
+  
+    const setIsLoggedIn = useGlobalStore((state) => state.setIsLoggedIn);
+    const setUsers = useGlobalStore((state) => state.setUser);
+  
+    const onSubmit = async (data) => {
+        if (!data.username || !data.email || !data.password) {
+          Alert.alert("Error", "Please fill in all fields");
+          return;
+        }
+      
+        try {
+          const user = await createUser(data.email, data.password, data.username);
+      
+          if (user) {
+            setIsLoggedIn(true);
+            setUsers({ email: user.email, username: user.name });
+      
+            Alert.alert("Success", "Account created successfully!");
+            router.replace("/home");
+          }
+        } catch (err) {
+          console.error("Signup Error:", err);
+          Alert.alert("Error", "Failed to create an account. Please try again.");
+        }
+      };
+      
+      
   
     return (
       <SafeAreaView className="bg-primary h-full">
@@ -52,8 +78,8 @@ import {
                 {/* Username Field */}
                 <Controller
                   control={control}
-                  name="username" // Corrected name to match defaultValues
-                  rules={{ required: "Username is required" }} // Validation rule
+                  name="username"
+                  rules={{ required: "Username is required" }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <FormFields
                       label="Username"
@@ -103,7 +129,7 @@ import {
                 {/* Create Account Button */}
                 <CustomButton
                   title={"Create Account"}
-                  handlePress={handleSubmit(onSubmit)} // Use handleSubmit for form submission
+                  handlePress={handleSubmit(onSubmit)}
                   containerStyles={"mt-10"}
                 />
   
